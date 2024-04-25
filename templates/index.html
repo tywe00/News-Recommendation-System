@@ -42,22 +42,25 @@
                     <div class="col"></div>
                 </div>
                 {% for result in results %}
-                    <p>
-                        <small>
+                    <div style="display: inline-block;">
+                        <small style="display: inline-block;">
+                            <input type="checkbox" id="checkbox{{ loop.index }}" name="checkbox{{ loop.index }}" style="margin-right: 5px;">
+                            <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
                             {% if result._source.headings %}
-                                <h3 class="text-sm"> {{ loop.index }}. {{ result._source.headings[0] }}</h3>
+                                <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
                             {% endif %}
+                        </small>
 
+                        <div>
                             Links: 
                             {% for url in result._source.additional_urls %}
-                                <a href="{{ url }}">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
                             {% endfor %}
-
-                            Category: {{ result._source.category }}.
-                            Last updated: {{ result._source.updated_at | default(result._source.created_on) }}.
-                            {% if result._score %}<i>(Score: {{ result._score }})</i>{% endif %}
-                        </small>
-                    </p>
+                        </div>
+                        
+                    </div>
+                    <br>
+                    <br>
                 {% endfor %}
             </div>
         </div>
