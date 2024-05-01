@@ -30,10 +30,6 @@ def login():
         user = db.session.scalar(
             sa.select(User).where(User.username == form.username.data))           # Make it User.username during error!
         if user is None or not user.check_password(form.password.data):
-            if user:
-                print(user)
-            elif not user.check_password(form.password.data):
-                print("wrong password")
             return redirect('/login')
         login_user(user, remember=form.remember_me.data)
         return redirect('/')
@@ -45,12 +41,12 @@ def logout():
     return redirect('/login')
 
 @app.get('/')
-@login_required
 def index():
+    if not current_user.is_authenticated:
+        return redirect('/login')
     return render_template('index.html')
 
 @app.post('/')
-@login_required
 def handle_search():
     query = request.form.get('query', '')
     print(query)
