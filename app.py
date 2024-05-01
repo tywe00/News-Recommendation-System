@@ -1,17 +1,56 @@
 import re
 from search import Search
-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from login import LoginForm
+from config import Config
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+import sqlalchemy as sa 
 
 app = Flask(__name__)
+app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+login = LoginManager(app)
 es = Search()
 
+from models import User
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    query = sa.select(User)
+    users = db.session.scalars(query).all()
+    for u in users:
+        print(u.id, u.username)
+    if current_user.is_authenticated:
+        return redirect('/')
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == form.username.data))           # Make it User.username during error!
+        if user is None or not user.check_password(form.password.data):
+            if user:
+                print(user)
+            elif not user.check_password(form.password.data):
+                print("wrong password")
+            return redirect('/login')
+        login_user(user, remember=form.remember_me.data)
+        return redirect('/')
+    return render_template('login.html', title='Sign In', form= form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/login')
 
 @app.get('/')
+@login_required
 def index():
     return render_template('index.html')
 
 @app.post('/')
+@login_required
 def handle_search():
     query = request.form.get('query', '')
     print(query)
@@ -48,3 +87,4 @@ def reindex():
     response = es.reindex()
     print(f'Index with {len(response["items"])} documents created '
         f'in {response["took"]} milliseconds.')
+
