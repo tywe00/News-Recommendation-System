@@ -6,6 +6,7 @@
           <input type="text" class="form-control" name="query" id="query" placeholder="Enter your search query" value="{{ query }}" autofocus>
       </div>
     </form>
+    
     {% if results %}
         <div class="row mb-3">
             <div class="col-2 mt-2">
@@ -20,6 +21,9 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+
+            
+
             <div class="col-10">
                 <div class="row mb-3">
                     <div class="col-sm-auto my-auto">
@@ -30,38 +34,59 @@
                             <a href="javascript:history.back(1)" class="btn btn-primary">← Previous page</a>
                         </div>
                     {% endif %}
-                    {% if from_ + results|length < total %}
+
+                    {% if from_ + 10 < total %}
                         <div class="col-sm-auto my-auto">
                             <form method="POST">
                                 <input type="hidden" name="query" value="{{ query }}">
-                                <input type="hidden" name="from_" value="{{ from_ + results|length }}">
-                                <button type="submit" class="btn btn-primary">Next page →</button>
+                                <input type="hidden" name="from_" value="{{ from_ + 10 }}">
+                                <h2>{{from_}}</h2>
+                                <button type="submit" id="myButton" class="btn btn-primary">Next page →</button>
+                            
                             </form>
                         </div>
                     {% endif %}
-                    <div class="col"></div>
+
+                    <script>
+                        function increase() {
+                            var button = document.getElementById("myButton");
+                            from_ = from_+ 10;
+                            console.log("from_ after increase:", from_); // For debugging
+                        }
+
+                        document.getElementById("myButton").addEventListener("click", function(event) {
+                            event.preventDefault(); // Prevent the default form submission
+                            console.log("Next page button clicked"); // For debugging
+                            increase(); // Call the increase function
+                            this.closest("form").submit(); // Submit the form
+                        });
+                    </script>
                 </div>
-                {% for result in results %}
+                {% set start_index = 0 %}
+                {% set end_index = 3 %}
+                {% for i in range(from_, end_index) %}
+                    {% set result = results[i] %}
                     <div style="display: inline-block;">
                         <small style="display: inline-block;">
-                            <input type="checkbox" id="checkbox{{ loop.index }}" name="checkbox{{ loop.index }}" style="margin-right: 5px;">
-                            <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
+                            <input type="checkbox" id="checkbox{{ i }}" name="checkbox{{ i }}" style="margin-right: 5px;">
+                            <label for="checkbox{{ i }}">{{ i }}.</label>
                             {% if result._source.headings %}
                                 <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
                             {% endif %}
                         </small>
-
+                
                         <div>
                             Links: 
                             {% for url in result._source.additional_urls %}
                                 <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </div>
-                        
+                                        
                     </div>
                     <br>
                     <br>
                 {% endfor %}
+                
             </div>
         </div>
         <hr>

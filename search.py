@@ -28,21 +28,12 @@ class Search:
         pprint(client_info.body)
 
     def search(self, **query_args):
+    
         print(query_args)
         print(self.es.search(index="search-news-articles", **query_args))
         search_term = query_args.get('query', {}).get('match', {}).get('name', None).get('query', None)
         print("Search term:", search_term)
         response = self.es.search(index="search-news-articles", q=search_term)
-
-        # Iterate over the hits in the response
-        # for hit in response['hits']['hits']:
-        #     # Access the _source field of each hit
-        #     source = hit['_source']
-        #     # Extract the additional_urls field if it exists
-        #     additional_urls = source.get('additional_urls', [])
-        #     # Print the additional_urls
-        #     print("Additional URLs:", additional_urls)
-
         return response
 
     def create_index(self):
