@@ -1,7 +1,7 @@
 import re
 from search import Search
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 es = Search()
@@ -9,12 +9,12 @@ es = Search()
 
 @app.get('/')
 def index():
-    return render_template('index.html')
+    from_ = 0
+    return render_template('index.html', from_=from_)
 
 @app.post('/')
 def handle_search():
     query = request.form.get('query', '')
-    print(query)
     results = es.search(
         query={
             'match': {
@@ -30,7 +30,7 @@ def handle_search():
             # Extract the additional_urls field if it exists
             additional_urls = source.get('additional_urls', [])
             # Print the additional_urls
-            print("Additional URLs:", additional_urls)
+           
 
     return render_template('index.html', results=results['hits']['hits'],
                            query=query, from_=0,
@@ -48,3 +48,9 @@ def reindex():
     response = es.reindex()
     print(f'Index with {len(response["items"])} documents created '
         f'in {response["took"]} milliseconds.')
+
+@app.route('/update_start_index', methods=['POST'])
+def update_start_index():
+    count = request.json.get('count', 0)
+    start_index = count
+    return jsonify({'success': True}), 200
