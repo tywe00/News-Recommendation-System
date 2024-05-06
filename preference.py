@@ -10,3 +10,10 @@ news_types = ['Sports', 'Politics', 'Technology', 'Entertainment', 'Business']
 class NewsPreferenceForm(FlaskForm):
     preferences = SelectMultipleField('News Preferences', choices=[(nt, nt) for nt in news_types], validators=[DataRequired()])
     submit = SubmitField('Save Preferences')
+
+class ClearNewsPreferenceForm(FlaskForm):
+    clear = SubmitField("Clear Preferences")
+
+
+class ClearRelevantArticlesForm(FlaskForm):
+    clears = SubmitField("Clear Relevant Articles")
