@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- Add the logout link here -->
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 8px;
+            background-color: #f1f1f1;
+        }
+    
+        .navbar a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
     <div class="navbar">
+        <a href="{{ url_for('about_me') }}">My Profile</a>
+        <a href="{{ url_for('choose_news_type') }}">Update News Preferences</a>
         <a href="{{ url_for('logout') }}">Logout</a>
     </div>
     <form method="POST" action="{{ url_for('handle_search') }}">
@@ -10,10 +26,6 @@
           <input type="text" class="form-control" name="query" id="query" placeholder="Enter your search query" value="{{ query }}" autofocus>
       </div>
     </form>
-    <label class="switch">
-        <input type="checkbox" id="toggleSearchBtn">
-        <span class="slider round">Activate Relevance Feedback!</span>
-    </label>
     {% if results %}
         <div class="row mb-3">
             <div class="col-2 mt-2">
@@ -49,28 +61,30 @@
                     {% endif %}
                     <div class="col"></div>
                 </div>
-                {% for result in results %}
-                    <div style="display: inline-block;">
-                        <small style="display: inline-block;">
-                            <input type="checkbox" id="checkbox{{ loop.index }}" name="checkbox{{ loop.index }}" style="margin-right: 5px;">
-                            <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
-                            {% if result._source.headings %}
-                                <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
-                            {% endif %}
-                        </small>
+                <form method="POST" action="{{ url_for('handle_selected_results') }}">
+                    <button type="submit" class="btn btn-primary">Submit Selected Results</button>
+                    {% for result in results %}
+                        <div style="display: inline-block;">
+                            <small style="display: inline-block;">
+                                <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }},{{ result._source.title }},{{ result._source.url }}" style="margin-right: 5px;">
+                                <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
+                                {% if result._source.headings %}
+                                    <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
+                                {% endif %}
+                            </small>
 
-                        <div>
-                            Links: 
-                            {% for url in result._source.additional_urls %}
-                                <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
+                            <div>
+                                Links:
+                                {% for url in result._source.additional_urls %}
+                                    <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                        
-                    </div>
-                    <br>
-                    <br>
-                {% endfor %}
-            </div>
+                        <br>
+                        <br>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Submit Selected Results</button>
+                </form>
         </div>
         <hr>
         <h2>Format of the Result Object:</h2>

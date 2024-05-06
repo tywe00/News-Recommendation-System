@@ -5,6 +5,7 @@ import time
 
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import NotFoundError
 
 load_dotenv()
 
@@ -51,6 +52,27 @@ class Search:
 
     def insert_document(self, document):
         return self.es.index(index='my_documents', body=document)
+    
+    def insert_user_preference(self, user_id, document):
+        return self.es.index(index='user_preference', id=user_id, body={'preferences': document})
+    
+    def get_user_preference(self, user_id):
+        try:
+            response = self.es.get(index='user_preference', id=user_id)
+            return response
+        except NotFoundError:
+            # Handle the case when the document is not found
+            return None
+        
+    def insert_relevant_articles(self, user_id, document):
+        return self.es.index(index='relevant_articles', id=user_id, body={'preferences': document})
+    
+    def get_relevant_articles(self, user_id):
+        try:
+            response = self.es.get(index='relevant_articles', id=user_id)
+            return response
+        except NotFoundError:
+            return None
     
     def insert_documents(self, documents):
         operations = []
