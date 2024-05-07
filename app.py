@@ -77,9 +77,10 @@ def about_me():
     if relevant_article:
         try:
             articles = relevant_article['_source']['preferences']
-            print(articles)
+            
             for result in articles:
-                _, title, url = result.split('=')
+                _, title, url = result.split('=()=')
+                print(title)
                 processed_articles.append({
                     'title': title,
                     'url': url
@@ -109,7 +110,7 @@ def handle_search():
     # print(results)
     # print(results['sports_articles'])
     final_results = []
-    for section in ['business_articles', 'science_articles', 'sports_articles', 'technology_news', 'world_articles']:
+    for section in ['business_articles', 'entertainment_articles', 'science_articles', 'sports_articles', 'technology_news', 'world_articles']:
         if(results[section]['hits']['hits']):
             for hit in results[section]['hits']['hits']:
                     # Access the _source field of each hit
@@ -118,7 +119,6 @@ def handle_search():
                     additional_urls = source.get('additional_urls', [])
                     final_results.append(hit)
     sorted_list = sorted(final_results, key=lambda x: x['_score'] , reverse=True)
-    #print(results)
     return render_template('index.html', results=sorted_list,
                            query=query, from_=0,
                            total=len(final_results))
@@ -128,7 +128,7 @@ def handle_selected_results():
     selected_results = request.form.getlist('selected_results')
     ''' processed_results = []
     for result in selected_results:
-        id_, title, url = result.split(',')
+        id_, title, url = result.split('=()=')
         processed_results.append({
             'id': id_,
             'title': title,

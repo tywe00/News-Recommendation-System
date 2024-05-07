@@ -42,18 +42,20 @@ class Search:
         #response = self.es.search(index="search-business-articles", q=search_term)
         # Perform individual searches
         response1 = self.es.search(index="search-business-articles", q=search_term)
-        response2 = self.es.search(index="search-science-articles", q=search_term)
-        response3 = self.es.search(index="search-sports-articles", q=search_term)
-        response4 = self.es.search(index="search-technology-news", q=search_term)
-        response5 = self.es.search(index="search-world-articles", q=search_term)
+        response2 = self.es.search(index="search-entertainment-articles", q=search_term)
+        response3 = self.es.search(index="search-science-articles", q=search_term)
+        response4 = self.es.search(index="search-sports-articles", q=search_term)
+        response5 = self.es.search(index="search-technology-news", q=search_term)
+        response6 = self.es.search(index="search-world-articles", q=search_term)
 
         # Combine the responses
         combined_response = {
             "business_articles": response1,
-            "science_articles": response2,
-            "sports_articles": response3,
-            "technology_news": response4,
-            "world_articles": response5
+            "entertainment_articles": response2,
+            "science_articles": response3,
+            "sports_articles": response4,
+            "technology_news": response5,
+            "world_articles": response6
         }
 
         return combined_response
@@ -78,10 +80,9 @@ class Search:
         merged_preferences = list(set(existing_preferences + new_preferences))
 
         # Update the document with the merged preferences
-        body = {'doc': {'preferences': merged_preferences}}
+        body = {'doc': {'id': user_id,'preferences': merged_preferences}}
         return self.es.update(index='user_preference', id=user_id, body=body)
 
-    
     def get_user_preference(self, user_id):
         try:
             response = self.es.get(index='user_preference', id=user_id)
