@@ -5,6 +5,8 @@
     <h1>About Me</h1>
 
     <h2>My News Preferences</h2>
+
+
     {% if topics %}
         <ul>
             {% for topic in topics %}
@@ -15,6 +17,11 @@
         <p>You haven't set any news preferences yet. Click <a href="{{ url_for('choose_news_type') }}">here</a> to update your preferences.</p>
     {% endif %}
 
+    <form action="" method="post">
+        {{ clearNewsPreference.hidden_tag() }}
+        <p>{{ clearNewsPreference.clear() }}</p>
+    </form>
+    
     <h2>Relevant Articles</h2>
     {% if processed_articles %}
         <ul>
@@ -28,6 +35,8 @@
     {% else %}
         <p>No relevant articles found.</p>
     {% endif %}
+
+   
 
     <h2>About This App</h2>
     <p>

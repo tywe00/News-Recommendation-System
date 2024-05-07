@@ -78,6 +78,21 @@ class Search:
             # Handle the case when the document is not found
             return None
         
+    def remove_user_preference(self, user_id):
+        try:
+            # Get the existing document
+            existing_doc = self.es.get(index='user_preference', id=user_id)
+            
+        except NotFoundError:
+            # If the document doesn't exist, initialize with an empty list
+            existing_preferences = []
+       
+        # Update the document with the merged preferences
+        body = {'doc': {'preferences': []}}
+        return self.es.update(index='user_preference', id=user_id, body=body)
+
+
+        
     def insert_relevant_articles(self, user_id, new_preferences):
         # Retrieve the existing document
         try:
@@ -103,6 +118,21 @@ class Search:
             return response
         except NotFoundError:
             return None
+        
+        
+    def remove_relevant_articles(self, user_id):
+        print("remove arttciclessssss")
+        try:
+            # Get the existing document
+            existing_doc = self.es.get(index='relevant_articles', id=user_id)
+            
+        except NotFoundError:
+            # If the document doesn't exist, initialize with an empty list
+            existing_preferences = []
+       
+        # Update the document with the merged preferences
+        body = {'doc': {'preferences': []}}
+        return self.es.update(index='relevant_articles', id=user_id, body=body)
     
     def insert_documents(self, documents):
         operations = []

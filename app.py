@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from login import LoginForm
 from config import Config
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from preference import NewsPreferenceForm
+from preference import ClearNewsPreferenceForm, ClearRelevantArticlesForm, NewsPreferenceForm
 import sqlalchemy as sa 
 
 app = Flask(__name__)
@@ -60,8 +60,11 @@ def choose_news_type():
 
 @app.route('/my_profile', methods=['GET', 'POST'])
 def about_me():
+    news_preferences_cleared = False
     user_preferences = es.get_user_preference(current_user.id)
     topics = []
+    clearNewsPreference = ClearNewsPreferenceForm()
+
     if user_preferences:
         try:
             topics = user_preferences['_source']['preferences']
@@ -70,6 +73,7 @@ def about_me():
 
     relevant_articles = es.get_relevant_articles(current_user.id)
     processed_articles = []
+    
     if relevant_articles:
         try:
             articles = relevant_articles['_source']['preferences']
@@ -82,7 +86,11 @@ def about_me():
         except KeyError:
             pass
 
-    return render_template('profile.html', topics=topics, processed_articles=processed_articles)
+    if clearNewsPreference.validate_on_submit():
+        es.remove_user_preference(current_user.id)
+        return render_template('profile.html', topics= [], processed_articles=processed_articles, clearNewsPreference=clearNewsPreference)
+        
+    return render_template('profile.html', topics=topics, processed_articles=processed_articles, clearNewsPreference=clearNewsPreference)
 
 @app.post('/')
 def handle_search():
