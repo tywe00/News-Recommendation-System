@@ -41,12 +41,43 @@ class Search:
         print("Search term:", search_term)
         #response = self.es.search(index="search-business-articles", q=search_term)
         # Perform individual searches
-        response1 = self.es.search(index="search-business-articles", q=search_term)
-        response2 = self.es.search(index="search-entertainment-articles", q=search_term)
-        response3 = self.es.search(index="search-science-articles", q=search_term)
-        response4 = self.es.search(index="search-sports-articles", q=search_term)
-        response5 = self.es.search(index="search-technology-news", q=search_term)
-        response6 = self.es.search(index="search-world-articles", q=search_term)
+        es = Search()
+        user_preferences = es.get_user_preference(1)
+
+        if user_preferences:
+            try:
+                topics = user_preferences['_source']['preferences']
+            except KeyError:
+                pass
+        print("topics: ")
+        print(topics)
+        response1 = None
+        response2 = None
+        response3 = None
+        response4 = None
+        response5 = None
+        response6 = None
+
+        if(topics == []):
+            response1 = self.es.search(index="search-business-articles", q=search_term)
+            response2 = self.es.search(index="search-entertainment-articles", q=search_term)
+            response3 = self.es.search(index="search-science-articles", q=search_term)
+            response4 = self.es.search(index="search-sports-articles", q=search_term)
+            response5 = self.es.search(index="search-technology-news", q=search_term)
+            response6 = self.es.search(index="search-world-articles", q=search_term)
+
+        if('Business' in topics):
+            response1 = self.es.search(index="search-business-articles", q=search_term)
+        if('Entertainment' in topics):
+            response2 = self.es.search(index="search-entertainment-articles", q=search_term)
+        if('Science' in topics):
+            response3 = self.es.search(index="search-science-articles", q=search_term)
+        if('Sports' in topics):
+            response4 = self.es.search(index="search-sports-articles", q=search_term)
+        if('Technology' in topics):
+            response5 = self.es.search(index="search-technology-news", q=search_term)
+        if('World' in topics):
+            response6 = self.es.search(index="search-world-articles", q=search_term)
 
         # Combine the responses
         combined_response = {

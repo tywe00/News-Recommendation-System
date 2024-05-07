@@ -111,13 +111,14 @@ def handle_search():
     # print(results['sports_articles'])
     final_results = []
     for section in ['business_articles', 'entertainment_articles', 'science_articles', 'sports_articles', 'technology_news', 'world_articles']:
-        if(results[section]['hits']['hits']):
-            for hit in results[section]['hits']['hits']:
-                    # Access the _source field of each hit
-                    source = hit['_source']
-                    # Extract the additional_urls field if it exists
-                    additional_urls = source.get('additional_urls', [])
-                    final_results.append(hit)
+        if(results[section]!=None):
+            if(results[section]['hits']['hits']):
+                for hit in results[section]['hits']['hits']:
+                        # Access the _source field of each hit
+                        source = hit['_source']
+                        # Extract the additional_urls field if it exists
+                        additional_urls = source.get('additional_urls', [])
+                        final_results.append(hit)
     sorted_list = sorted(final_results, key=lambda x: x['_score'] , reverse=True)
     return render_template('index.html', results=sorted_list,
                            query=query, from_=0,

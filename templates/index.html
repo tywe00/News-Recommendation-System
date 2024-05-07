@@ -71,7 +71,7 @@
                                     <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }} =()= {{ result._source.title }} =()= {{ result._source.url }}" style="margin-right: 5px;">
                                     <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
                                     {% if result._source.headings %}
-                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
+                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.title }} {{result._score}}</h3>
                                     {% endif %}
                                 </small>
 
