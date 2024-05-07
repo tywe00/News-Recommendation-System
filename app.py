@@ -71,14 +71,15 @@ def about_me():
         except KeyError:
             pass
 
-    relevant_articles = es.get_relevant_articles(current_user.id)
+    relevant_article = es.get_relevant_article(current_user.id)
     processed_articles = []
     
-    if relevant_articles:
+    if relevant_article:
         try:
-            articles = relevant_articles['_source']['preferences']
+            articles = relevant_article['_source']['preferences']
+            print(articles)
             for result in articles:
-                _, title, url = result.split(',')
+                _, title, url = result.split('=')
                 processed_articles.append({
                     'title': title,
                     'url': url
@@ -105,17 +106,22 @@ def handle_search():
             }
         }
     )
-    for hit in results['hits']['hits']:
-            # Access the _source field of each hit
-            source = hit['_source']
-            # Extract the additional_urls field if it exists
-            additional_urls = source.get('additional_urls', [])
-            # Print the additional_urls
-            print("Additional URLs:", additional_urls)
-
-    return render_template('index.html', results=results['hits']['hits'],
+    # print(results)
+    # print(results['sports_articles'])
+    final_results = []
+    for section in ['business_articles', 'science_articles', 'sports_articles', 'technology_news', 'world_articles']:
+        if(results[section]['hits']['hits']):
+            for hit in results[section]['hits']['hits']:
+                    # Access the _source field of each hit
+                    source = hit['_source']
+                    # Extract the additional_urls field if it exists
+                    additional_urls = source.get('additional_urls', [])
+                    final_results.append(hit)
+    sorted_list = sorted(final_results, key=lambda x: x['_score'] , reverse=True)
+    #print(results)
+    return render_template('index.html', results=sorted_list,
                            query=query, from_=0,
-                           total=results['hits']['total']['value'])
+                           total=len(final_results))
 
 @app.route('/handle_selected_results', methods=['POST'])
 def handle_selected_results():
@@ -128,7 +134,8 @@ def handle_selected_results():
             'title': title,
             'url': url
         }) '''
-    es.insert_relevant_articles(current_user.id, selected_results)
+    #print(selected_results)
+    es.insert_relevant_article(current_user.id, selected_results)
     #print("HERE ARE SELECTED ARTICLES")
     #print(len(selected_results))
     return render_template('index.html')

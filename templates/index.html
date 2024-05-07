@@ -61,30 +61,36 @@
                     {% endif %}
                     <div class="col"></div>
                 </div>
+
                 <form method="POST" action="{{ url_for('handle_selected_results') }}">
                     <button type="submit" class="btn btn-primary">Submit Selected Results</button>
-                    {% for result in results %}
-                        <div style="display: inline-block;">
-                            <small style="display: inline-block;">
-                                <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }},{{ result._source.title }},{{ result._source.url }}" style="margin-right: 5px;">
-                                <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
-                                {% if result._source.headings %}
-                                    <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
-                                {% endif %}
-                            </small>
+                    <div>
+                        {% for result in results %}
+                            <div style="display: inline-block;">
+                                <small style="display: inline-block;">
+                                    <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }} = {{ result._source.title }} = {{ result._source.url }}" style="margin-right: 5px;">
+                                    <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
+                                    {% if result._source.headings %}
+                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.headings[0] }}</h3>
+                                    {% endif %}
+                                </small>
 
-                            <div>
-                                Links:
-                                {% for url in result._source.additional_urls %}
-                                    <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
+                                <div>
+                                    Links:
+                                    {% for url in result._source.additional_urls %}
+                                        <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                        <br>
-                        <br>
-                    {% endfor %}
+                            <br>
+                            <br>
+                        {% endfor %}
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary">Submit Selected Results</button>
                 </form>
+
+                
         </div>
         <hr>
         <h2>Format of the Result Object:</h2>
