@@ -6,7 +6,7 @@ import time
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
-
+from flask_login import  current_user
 load_dotenv()
 
 
@@ -42,7 +42,7 @@ class Search:
         #response = self.es.search(index="search-business-articles", q=search_term)
         # Perform individual searches
         es = Search()
-        user_preferences = es.get_user_preference(1)
+        user_preferences = es.get_user_preference(current_user.id)
 
         if user_preferences:
             try:
@@ -65,19 +65,19 @@ class Search:
             response4 = self.es.search(index="search-sports-articles", q=search_term)
             response5 = self.es.search(index="search-technology-news", q=search_term)
             response6 = self.es.search(index="search-world-articles", q=search_term)
-
-        if('Business' in topics):
-            response1 = self.es.search(index="search-business-articles", q=search_term)
-        if('Entertainment' in topics):
-            response2 = self.es.search(index="search-entertainment-articles", q=search_term)
-        if('Science' in topics):
-            response3 = self.es.search(index="search-science-articles", q=search_term)
-        if('Sports' in topics):
-            response4 = self.es.search(index="search-sports-articles", q=search_term)
-        if('Technology' in topics):
-            response5 = self.es.search(index="search-technology-news", q=search_term)
-        if('World' in topics):
-            response6 = self.es.search(index="search-world-articles", q=search_term)
+        else:
+            if('Business' in topics):
+                response1 = self.es.search(index="search-business-articles", q=search_term)
+            if('Entertainment' in topics):
+                response2 = self.es.search(index="search-entertainment-articles", q=search_term)
+            if('Science' in topics):
+                response3 = self.es.search(index="search-science-articles", q=search_term)
+            if('Sports' in topics):
+                response4 = self.es.search(index="search-sports-articles", q=search_term)
+            if('Technology' in topics):
+                response5 = self.es.search(index="search-technology-news", q=search_term)
+            if('World' in topics):
+                response6 = self.es.search(index="search-world-articles", q=search_term)
 
         # Combine the responses
         combined_response = {
