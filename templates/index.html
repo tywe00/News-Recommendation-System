@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 8px;
+            background-color: #f1f1f1;
+        }
+    
+        .navbar a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+    <div class="navbar">
+        <a href="{{ url_for('about_me') }}">My Profile</a>
+        <a href="{{ url_for('choose_news_type') }}">Update News Preferences</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    <form method="POST" action="{{ url_for('handle_search') }}">
+      <div class="mb-3">
+          <input type="text" class="form-control" name="query" id="query" placeholder="Enter your search query" value="{{ query }}" autofocus>
+      </div>
+    </form>
+    {% if results %}
+        <div class="row mb-3">
+            <div class="col-2 mt-2">
+                <p><a href="javascript:history.back(1)">← Back</a></p>
+                {% for agg in aggs %}
+                    <h6 class="mt-3">{{ agg }}</h6>
+                    {% for key, count in aggs[agg].items() %}
+                        <form method="POST">
+                            <input type="hidden" name="query" value="{{ agg|lower }}:{{key}} {{ query }}">
+                            <button type="submit" class="btn btn-link btn-sm"{% if aggs[agg]|length == 1 %} disabled{% endif %}>{{ key }} ({{ count }})</button>
+                        </form>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="col-10">
+                <div class="row mb-3">
+                    <div class="col-sm-auto my-auto">
+                        Showing results {{ from_ + 1 }}-{{ from_ + results|length }} out of {{ total }}.
+                    </div>
+                    {% if from_ > 0 %}
+                        <div class="col-sm-auto my-auto">
+                            <a href="javascript:history.back(1)" class="btn btn-primary">← Previous page</a>
+                        </div>
+                    {% endif %}
+                    {% if from_ + results|length < total %}
+                        <div class="col-sm-auto my-auto">
+                            <form method="POST">
+                                <input type="hidden" name="query" value="{{ query }}">
+                                <input type="hidden" name="from_" value="{{ from_ + results|length }}">
+                                <button type="submit" class="btn btn-primary">Next page →</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    <div class="col"></div>
+                </div>
+
+                <form method="POST" action="{{ url_for('handle_selected_results') }}">
+                    <button type="submit" class="btn btn-primary">Submit Selected Results</button>
+                    <div>
+                        {% for result in results %}
+                            <div style="display: inline-block;">
+                                <small style="display: inline-block;">
+                                    <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }} =()= {{ result._source.title }} =()= {{ result._source.url }} =()= {{ result._index }}" style="margin-right: 5px;">
+                                    <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
+                                    {% if result._source.headings %}
+                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.title }}</h3>
+                                    {% endif %}
+                                </small>
+
+                                <div>
+                                    Links:
+                                    {% for url in result._source.additional_urls %}
+                                        <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <br>
+                            <br>
+                        {% endfor %}
+                    </div>
+                </form>
+
+                
+        </div>
+        <hr>
+        <h2>Format of the Result Object:</h2>
+        <pre>{{ results[0] | pprint }}</pre>
+    {% elif request.method == 'POST' %}
+        <p>No results found.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p><a href="javascript:history.back(1)">← Back</a></p>
+    <h1>About Me</h1>
+
+    <h2>My News Preferences</h2>
+
+
+    {% if topics %}
+        <ul>
+            {% for topic in topics %}
+                <li>{{ topic }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't set any news preferences yet. Click <a href="{{ url_for('choose_news_type') }}">here</a> to update your preferences.</p>
+    {% endif %}
+
+    <form action="" method="post">
+        {{ clearNewsPreference.hidden_tag() }}
+        <p>{{ clearNewsPreference.clear() }}</p>
+    </form>
+    
+    <h2>Relevant Articles</h2>
+    {% if processed_articles %}
+        <ul>
+            {% for article in processed_articles %}
+                <li>
+                    <h5>{{ article.title }}</h5>
+                    <a href="{{ article.url }}" target="_blank">{{ article.url }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No relevant articles found.</p>
+    {% endif %}
+
+    <form action="" method="post">
+        {{ ClearRelevantArticles.hidden_tag() }}
+        <p>{{ ClearRelevantArticles.clear() }}</p>
+    </form>
+
+   
+
+    <h2>About This App</h2>
+    <p>
+        This is a news recommendation system that suggests news articles based on your preferences.
+        The system uses advanced algorithms to analyze your interests and provide personalized recommendations.
+        You can update your news preferences at any time to refine the recommendations.
+    </p>
+{% endblock %}

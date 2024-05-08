@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>News Preferences</h1>
+    <a href="{{url_for('index') }}">← Back</a>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Select your preferred news categories:</legend>
+            <div>
+                {% for choice in form.preferences %}
+                    <input type="checkbox" id="{{ choice.id }}" name="preferences" value="{{ choice.data }}">
+                    <label for="{{ choice.id }}">{{ choice.label }}</label><br>
+                {% endfor %}
+                {% for error in form.preferences.errors %}
+                    <span style="color: red;">{{ error }}</span><br>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <p>{{ form.submit() }}</p>
+    </form>
+    
+    
+
+    {% if session.get('news_types') %}
+        <h2>Your Selected News Types:</h2>
+        <ul>
+            {% for news_type in session['news_types'] %}
+                <li>{{ news_type }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
