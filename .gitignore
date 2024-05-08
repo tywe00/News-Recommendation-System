@@ -3,9 +3,9 @@
 .flaskenv
 *.pyc
 *.pyo
-env/
+.env
 venv/
-.venv/
+.venv
 env*
 dist/
 build/
@@ -19,3 +19,5 @@ docs/_build/
 .vscode
 get-pip.py
 elastic/
+__pycache__/
+data.json
