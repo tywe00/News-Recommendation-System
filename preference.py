@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 
 
 # Define the available news types
-news_types = ['Sports', 'Politics', 'Science', 'Entertainment', 'Business', 'Technology', 'World']
+news_types = ['Sports', 'Science', 'Entertainment', 'Business', 'Technology', 'World']
 
 class NewsPreferenceForm(FlaskForm):
     preferences = SelectMultipleField('News Preferences', choices=[(nt, nt) for nt in news_types], validators=[DataRequired()])
