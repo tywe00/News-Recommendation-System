@@ -25,3 +25,5 @@ This is a news recommendation system powred by Elastic Search that suggests news
 4, Browse and read the recommended news articles.
 
 5, Update your preferences at any time to refine the recommendations.
+
+NB: If you are a course administrator and want to test, send an email to tywe@kth.se to gain login credentials
