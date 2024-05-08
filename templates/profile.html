@@ -36,6 +36,11 @@
         <p>No relevant articles found.</p>
     {% endif %}
 
+    <form action="" method="post">
+        {{ ClearRelevantArticles.hidden_tag() }}
+        <p>{{ ClearRelevantArticles.clear() }}</p>
+    </form>
+
    
 
     <h2>About This App</h2>

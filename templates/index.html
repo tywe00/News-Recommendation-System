@@ -68,10 +68,10 @@
                         {% for result in results %}
                             <div style="display: inline-block;">
                                 <small style="display: inline-block;">
-                                    <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }} =()= {{ result._source.title }} =()= {{ result._source.url }}" style="margin-right: 5px;">
+                                    <input type="checkbox" id="checkbox{{ loop.index }}" name="selected_results" value="{{ result._id }} =()= {{ result._source.title }} =()= {{ result._source.url }} =()= {{ result._index }}" style="margin-right: 5px;">
                                     <label for="checkbox{{ loop.index }}">{{ loop.index }}.</label>
                                     {% if result._source.headings %}
-                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.title }} {{result._score}}</h3>
+                                        <h3 class="text-sm" style=" margin-left: 10px;">{{ result._source.title }}</h3>
                                     {% endif %}
                                 </small>
 
@@ -86,8 +86,6 @@
                             <br>
                         {% endfor %}
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">Submit Selected Results</button>
                 </form>
 
                 

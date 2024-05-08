@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 
 
 # Define the available news types
-news_types = ['Sports', 'Politics', 'Technology', 'Entertainment', 'Business']
+news_types = ['Sports', 'Politics', 'Science', 'Entertainment', 'Business', 'Technology', 'World']
 
 class NewsPreferenceForm(FlaskForm):
     preferences = SelectMultipleField('News Preferences', choices=[(nt, nt) for nt in news_types], validators=[DataRequired()])
@@ -14,6 +14,5 @@ class NewsPreferenceForm(FlaskForm):
 class ClearNewsPreferenceForm(FlaskForm):
     clear = SubmitField("Clear Preferences")
 
-
 class ClearRelevantArticlesForm(FlaskForm):
-    clears = SubmitField("Clear Relevant Articles")
+    clear = SubmitField('Clear Relevant Articles')
